@@ -1,5 +1,4 @@
 import datetime
-
 import requests
 from django.shortcuts import render
 
@@ -16,7 +15,7 @@ def index(request):
 
     if request.method == "POST":
         city1 = request.POST['city1']
-        city2 = request.get('city2', None)
+        city2 = request.POST.get('city2', None)
 
         weather_data1, daily_forecasts1 = fetch_weather_and_forecast(
                 city1, API_KEY, current_weather_url, forecast_url
@@ -39,12 +38,19 @@ def index(request):
 
         return(request, "weather_app/index.html", context)
     else:
-        return render(request, "weather_app/index.html") 
+        return render(request, "weather_app/index.html")
 
 # Send a request to the OpenWeatherMap API and render data into template
 def fetch_weather_and_forecast(city, api_key, current_weather_url, forecast_url):
     # Get response as a JSON object so it can be treated like a dictionary
     response = requests.get(current_weather_url.format(city, api_key)).json()
+
+    print("*******************************************************************")
+    print(current_weather_url.format(city, api_key))
+    print(response)
+    print("*******************************************************************")
+
+    # import code; code.interact(local=dict(globals(), **locals()))
 
     # Extract coordinates from response
     lat, lon = response['coord']['lat'], response['coord']['lon']
@@ -56,7 +62,7 @@ def fetch_weather_and_forecast(city, api_key, current_weather_url, forecast_url)
     weather_data = {
         "city": city,
         "temperature": round(response['main']['temp'] - 273.15, 2),  # Convert from Kelvin to Celsius
-        "description": response['weather'[0]['description']],
+        "description": response['weather'][0]['description'],
         "icon": response['weather'][0]['icon']
     }
 
