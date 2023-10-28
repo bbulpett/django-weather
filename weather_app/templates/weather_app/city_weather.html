@@ -1,15 +1,15 @@
-{% if weather_data %}
-  <h1>{{ weather_data.city }}</h1>
-  <h2>{{ weather_data.temperature }}</h2>
-  <p>{{ weather_data.description }}</p>
+{% if current_weather %}
+  <h1>{{ city }}</h1>
+  <h2>{{ current_weather.temperature }}</h2>
+  <p>{{ current_weather.description }}</p>
   <img
-    src="http://openweathermap.org/img/w/{{ weather_data.icon }}.png"
-    alt=""{{ weather_data.description }}
+    src="http://openweathermap.org/img/w/{{ current_weather.icon }}.png"
+    alt=""{{ current_weather.description }}
   >
 {% endif %}
 
 {% if daily_forecasts %}
-  <h2>5-day Forecasts</h2>
+  <h2>7-day Forecast</h2>
   <div class="forecast-container">
     {% for forecast in daily_forecasts %}
       <div class="forecast">

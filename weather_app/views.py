@@ -21,8 +21,8 @@ def index(request):
         lat, lon = fetch_city_coordinates(city1, API_KEY, geocoding_url)
         city1_weather = fetch_weather_data(lat, lon, API_KEY, weather_url)
 
-        current_weather1 = city1_weather['current']
-        daily_forecasts1 = city1_weather['daily']
+        current_weather1 = format_current_weather(city1_weather['current'])
+        daily_forecasts1 = format_daily_forecast(city1_weather['daily'])
 
         # TODO: Try to get data for both cities in one request
         if city2:
@@ -30,15 +30,17 @@ def index(request):
             lat, lon = fetch_city_coordinates(city2, API_KEY, geocoding_url)
             city2_weather = fetch_weather_data(lat, lon, API_KEY, weather_url)
 
-            current_weather2 = city2_weather['current']
-            daily_forecasts2 = city2_weather['daily']
+            current_weather2 = format_current_weather(city2_weather['current'])
+            daily_forecasts2 = format_daily_forecast(city2_weather['daily'])
         else:
             current_weather2, daily_forecasts2 = None, None
 
         # Build the context dictionary to pass to the template
         context = {
+            "city1": city1,
             "current_weather1": current_weather1,
             "daily_forecasts1": daily_forecasts1,
+            "city2": city2,
             "current_weather2": current_weather2,
             "daily_forecasts2": daily_forecasts2
         }
@@ -62,39 +64,25 @@ def fetch_weather_data(lat, lon, api_key, url):
 
     return response
 
-# def fetch_weather_and_forecast(city, api_key, current_weather_url, forecast_url):
+def format_current_weather(current_weather_data):
+    return {
+        "temperature": round(current_weather_data['temp'] - 273.15, 2),
+        "description": current_weather_data['weather'][0]['description'],
+        "icon": current_weather_data['weather'][0]['icon']
+    }
 
-#     # Get response as a JSON object so it can be treated like a dictionary
-#     response = requests.get(current_weather_url.format(city, api_key)).json()
+def format_daily_forecast(daily_forecast_data):
+    forecast_data = []
 
-#     # import code; code.interact(local=dict(globals(), **locals()))
+    for day in daily_forecast_data:
+        forecast_data.append(
+            {
+                "day": datetime.datetime.fromtimestamp(day['dt']).strftime("%A"),
+                "min_temp": round(day['temp']['min'] - 273.15, 2),
+                "max_temp": round(day['temp']['max'] - 273.15, 2),
+                "description": day['weather'][0]['description'],
+                "icon": day['weather'][0]['icon']
+            }
+        )
 
-#     # Extract coordinates from response
-#     lat, lon = response['lat'], response['lon']
-
-#     # Use coordinates to get weather data from forecase url
-#     forecast_response = requests.get(forecast_url.format(lat, lon, api_key)).json()
-
-#     # Extract data from current weather response, formatted for the template
-#     weather_data = {
-#         "city": city,
-#         "temperature": round(response['main']['temp'] - 273.15, 2),  # Convert from Kelvin to Celsius
-#         "description": response['weather'][0]['description'],
-#         "icon": response['weather'][0]['icon']
-#     }
-
-#     # Extract data from forecast response, formatted for the template
-#     daily_forecasts = []
-
-#     for daily_data in forecast_response['daily'][:5]:
-#         daily_forecasts.append(
-#             {
-#                 "day": datetime.datetime.fromtimestamp(daily_data['dt']).strftime("%A"),
-#                 "min_temp": round(daily_data['temp']['min'] - 273.15, 2),
-#                 "max_temp": round(daily_data['temp']['max'] - 273.15, 2),
-#                 "description": daily_data['weather'][0]['description'],
-#                 "icon": daily_data['weather'][0]['icon']
-#             }
-#         )
-
-#     return weather_data, daily_forecasts
+    return forecast_data
