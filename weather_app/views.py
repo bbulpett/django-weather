@@ -1,6 +1,6 @@
-import datetime
-import requests
 from django.shortcuts import render
+import requests
+import datetime
 
 # Create your views here.
 def index(request):
@@ -15,15 +15,11 @@ def index(request):
 
     if request.method == "POST":
         city1 = request.POST['city1']
-        city2 = request.POST.get('city2', None)
+        city2 = request.POST['city2'] if request.POST['city2'] else None
 
         # Get coordinates from city 1 name
         lat, lon = fetch_city_coordinates(city1, API_KEY, geocoding_url)
         city1_weather = fetch_weather_data(lat, lon, API_KEY, weather_url)
-
-        print("*" * 50)
-        print(city1_weather)
-        print("*" * 50)
 
         current_weather1 = city1_weather['current']
         daily_forecasts1 = city1_weather['daily']
@@ -47,7 +43,7 @@ def index(request):
             "daily_forecasts2": daily_forecasts2
         }
 
-        return(request, "weather_app/index.html", context)
+        return render(request, "weather_app/index.html", context)
     else:
         return render(request, "weather_app/index.html")
 
