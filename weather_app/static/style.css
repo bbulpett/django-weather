@@ -33,15 +33,14 @@ button[type="submit"] {
   display: flex;
   justify-content: space-between;
   margin-top: 30px;
-  flex-wrap: wrap;
+  padding: 0 20px;
 }
 
-/* Style the city containers */
 .city-container {
   background-color: #fff;
   border: 1px solid #ccc;
   border-radius: 5px;
-  padding: 20px;
+  padding: 30px 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   text-align: center;
   width: calc(50% - 10px); /* Two containers side-by-side with a small margin */
@@ -49,11 +48,16 @@ button[type="submit"] {
 }
 
 .city-container h1 {
-  font-size: 20px;
+  font-size: 24px;
   margin-bottom: 10px;
 }
 
-.city-container h2, .city-container p {
+.city-container h2 {
+  font-size: 18px;
+  margin: 20px inherit;
+}
+
+.city-container p {
   font-size: 16px;
   margin-top: 10px;
 }
@@ -63,6 +67,10 @@ button[type="submit"] {
 }
 
 @media (max-width: 768px) {
+  .comparison-container {
+    flex-direction: column; /* Stack the containers vertically on small screens */
+    padding: 0;
+  }
   .city-container {
     width: 100%; /* Full width for city containers on small screens */
   }
