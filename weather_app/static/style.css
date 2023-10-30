@@ -8,14 +8,28 @@ body {
   font-family: Arial, sans-serif;
 }
 
+nav {
+  background-color: #007bff;
+  color: #fff;
+  padding: 20px;
+}
+
+nav h1 {
+  font-size: 24px;
+  margin: 0;
+}
+
+main {
+  padding-top: 20px;
+}
+
 form {
   text-align: center;
-  margin-top: 20px;
 }
 
 input[type="text"] {
   padding: 10px;
-  margin: 5px;
+  margin: 10px 5px 5px;
   border: 1px solid #ccc;
   border-radius: 5px;
 }
